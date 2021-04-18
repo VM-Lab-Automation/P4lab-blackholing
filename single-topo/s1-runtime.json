@@ -1,0 +1,33 @@
+{
+  "target": "bmv2",
+  "p4info": "build/black_hole.p4.p4info.txt",
+  "bmv2_json": "build/black_hole.json",
+  "table_entries": [
+    {
+      "table": "MyIngress.forwarding",
+      "default_action": true,
+      "action_name": "MyIngress.drop",
+      "action_params": { }
+    },
+    {
+      "table": "MyIngress.forwarding",
+      "match": {
+        "hdr.ethernet.srcAddr": "00:00:00:00:00:01"
+      },
+      "action_name": "MyIngress.forward",
+      "action_params": {
+        "port": 2
+      }
+    },
+    {
+      "table": "MyIngress.forwarding",
+      "match": {
+        "hdr.ethernet.srcAddr": "00:00:00:00:00:02"
+      },
+      "action_name": "MyIngress.forward",
+      "action_params": {
+        "port": 1
+      }
+    }
+  ]
+}
