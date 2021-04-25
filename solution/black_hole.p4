@@ -84,7 +84,8 @@ parser MyParser(packet_in packet,
         }
     }
     state parse_tcp {
-        // TODO: parse TCP header
+        packet.extract(hdr.tcp);
+        transition accept;
     }
 }
 
@@ -108,12 +109,12 @@ control MyIngress(inout headers hdr,
     }
     
     action blackhole_action() {
-        // TODO: set flag to 1
+        meta.flag = 1;
     }
     
     table blackholing {
         key = {
-            // TODO: exact matching by tcp destination port
+            hdr.tcp.dstPort: exact;
         }
         actions = {
             blackhole_action;
@@ -143,8 +144,12 @@ control MyIngress(inout headers hdr,
     
     apply {
         forwarding.apply();
-        // TODO: apply blackholing action
-        // TODO: if flag is set to 1, drop the packet
+        if(hdr.tcp.isValid()){
+          blackholing.apply();
+        }
+        if(meta.flag == 1) {
+          drop();
+        }
     }
 }
 
